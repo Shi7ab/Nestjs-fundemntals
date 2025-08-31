@@ -1,0 +1,28 @@
+1-  DI => Depndency Injection -> design pattern
+
+-> userController -> userService -> userRepositry, AuthRepositry
+
+-> instance userController
+const userController = new userController(new userService(new userRepositry(),new AuthRepositry()))
+
+Depndency Injection = reduce instance to be useliy coubel
+
+
+
+2-  Ioc => Inversion of control -> mean 
+-> we don't create instance of class manually , we let framework create it for us
+
+
+=> DI and Ioc -> mange depndency 
+
+
+-------------------------------------------------------------
+==> DI Container
+=> we can use DI Container to mange depndency for us
+=> userService -> userRepositry
+=> userService -> userRepositry // another  instance
+
+=> DI Container return -> instance userController
+
+// we use @Injectable() -> to let nestJs we need to use instance from DI Container 
+
