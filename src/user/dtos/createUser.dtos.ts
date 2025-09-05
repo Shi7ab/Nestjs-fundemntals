@@ -1,17 +1,15 @@
-import { IsString, IsInt, Length, IsEmail } from 'class-validator';
+import { IsString, Length, IsEmail } from 'class-validator';
 
-export class createUserData{
-    @IsString()
-    @Length(3,20)
-    username:String;
+export class createUserData {
+  @IsString()
+  @Length(3, 20)
+  username: string;
 
-    @IsString()
-    @IsEmail({},{message:'incorrect Email'})
-    email:String;
+  @IsEmail({}, { message: 'incorrect Email' })
+  email: string;
 
-    @IsInt()
-    password:String;
+  @IsString()
+  @Length(6, 50, { message: 'Password must be at least 6 characters' })
+  password: string;
 
-    @IsString()
-    Country:String;
 }

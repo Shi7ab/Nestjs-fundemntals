@@ -1,52 +1,37 @@
 import { Injectable } from "@nestjs/common";
-import { UserEntity } from "./user.entity";
+import { UserRepository } from "./user.repoistory";
 import { UpdateUserData } from "./dtos/update-user.dto";
 import { createUserData } from "./dtos/createUser.dtos";
-import {v4 as uuid} from "uuid"
+import bcrypt from "bcrypt"
 
 @Injectable()
-export class UserService{
-     private  readonly users:UserEntity[] = [];
+export class UserService {
+  constructor(private readonly userRepository: UserRepository) {}
 
-    findUsers(): UserEntity[]{
-        return this.users
-    }
+  async findUsers() {
+    return this.userRepository.findUsers();
+  }
 
-    findUserById(id: string): UserEntity {
-         const user : UserEntity = this.users.find((user)=>user.id === id)
-        return user
-    }
+  async findUserById(id: string) {
+    return this.userRepository.findUserById(id);
+  }
 
-    createUser(createUserDto: createUserData): UserEntity{
-         const newuser :UserEntity = {
-            ...createUserDto,
-             id:uuid(),
+  async findByEmail(email: string) {
+  return this.userRepository.findByEmail(email); // 👈 نفس الحاجة لازم تكون موجودة في الrepo
+  }
 
-        }
-        this.users.push(newuser) 
 
-        return newuser
-    }
+  async createUser(createUserDto: createUserData) {
+    const salt = await bcrypt.genSalt();
+    createUserDto.password = await bcrypt.hash(createUserDto.password, salt);
+    return this.userRepository.createUser(createUserDto);
+  }
 
-    updateUser(id: string, user:UpdateUserData): UserEntity {
-               // 1) find the elemnt index want to update
-        const index = this.users.findIndex((user)=>user.id === id)
-      // 2) update this elemnt
-        this.users[index] = {...this.users[index] , ...user}
-        
-        return this.users[index] 
+  async updateUser(id: string, user: UpdateUserData) {
+    return this.userRepository.updateUser(id, user);
+  }
 
-    }
-
-    deleteUser(id: string) {
-         const index = this.users.findIndex((user)=>user.id === id) 
-         this.users.splice(index, 1)
-         return "user delete"
-    }
-      // another solution 
-   /* delete (@Param("id") id:string){   // 5-
-          this.users.filter((user)=>user.id == id)
-         return "user delete"
-         
-    }*/
+  async deleteUser(id: string) {
+    return this.userRepository.deleteUser(id);
+  }
 }

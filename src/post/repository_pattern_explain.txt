@@ -1,0 +1,24 @@
+// Repository Pattern Explanation
+
+// 1. The Repository Pattern is a design pattern that separates the data access logic 
+//    from the business logic of the application.
+//
+// 2. Instead of writing database queries directly in the service or controller, 
+//    we put all database-related code inside a "Repository" class.
+//
+// 3. The Service Layer calls the Repository to perform database actions (like find, create, update, delete).
+//    The Service doesn't care HOW the data is stored, it only asks the Repository.
+//
+// 4. Benefits:
+//    - Keeps code clean and organized.
+//    - Makes the business logic independent from the data source (DB, API, files, etc).
+//    - Easier to change the database later without changing the service code.
+//    - Easier to test (can replace the Repository with a mock).
+//
+// 5. Example:
+//    Controller -> Service -> Repository -> Database
+//
+//    - Controller: handles HTTP requests
+//    - Service: contains business logic
+//    - Repository: handles database queries
+//    - Database: the actual data storage

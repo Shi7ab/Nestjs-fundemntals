@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, HttpCode, 
     HttpStatus, Param, ParseIntPipe,
      ParseUUIDPipe, Patch, Post, Query, Req, Res, 
+     UseGuards, 
      UsePipes, 
      ValidationPipe} from "@nestjs/common";
 import type { Request } from "express";
@@ -10,26 +11,31 @@ import { UserEntity } from "./user.entity";
 import {v4 as uuid} from "uuid"
 import { CustomValidationPipe } from "./pipe/validation.pipe";
 import { UserService } from "./user.service";
+import { AuthGuard } from "@nestjs/passport";
+import { RolesGuard } from "src/guards/roles.guard";
 
 
-
+@UseGuards(AuthGuard("jwt"),RolesGuard)
 @Controller("user")
 // controller actions 
 export default class UserController{
     constructor(private readonly userService:UserService){}
 
- 
 
-    @Get()  
-    find(@Query("username", CustomValidationPipe) username:String):UserEntity[]{    // 1-
-        return this.userService.findUsers()
+    @Get()
+    async find(@Query("username") username?: string) {
+    const users = await this.userService.findUsers();
+    if (username) {
+        return users.filter((user) => user.username === username);
     }
-    
+    return users;
+    }
 
     @Get(":id")
-    findOne(@Param("id", ParseUUIDPipe) id:string): UserEntity{   
-        return this.userService.findUserById(id)
+    async findOne(@Param("id", ParseUUIDPipe) id: string) {
+    return this.userService.findUserById(id);
     }
+
 
     @UsePipes(ValidationPipe)
     @Post()
