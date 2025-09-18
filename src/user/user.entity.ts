@@ -1,7 +1,8 @@
-export class UserEntity{
-    id:any;
-    username:String;
-    email:String;
-    password:String;
-    Country:String;
+export class UserEntity {
+    id: any;
+    username: string;
+    email: string;
+    password: string;
+    Country: string;
+    resetPasswordToken?: string;
 }

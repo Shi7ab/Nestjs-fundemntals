@@ -2,6 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { MailService } from '../mail/mail.service';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 describe('AuthService', () => {
@@ -9,16 +11,24 @@ describe('AuthService', () => {
 
   const mockUserService = {
     findByEmail: jest.fn(),
+    findUserById: jest.fn(),
+    updateUser: jest.fn(),
   };
 
   const mockJwtService = {
-    signAsync: jest.fn(),
+    signAsync: jest.fn().mockResolvedValue('mocked-jwt-token'),
+  };
+
+  const mockConfigService = {
+    get: jest.fn().mockReturnValue('http://localhost:3000'),
+  };
+
+  const mockMailService = {
+    sendResetPasswordTemplate: jest.fn(),
   };
 
   const mockCacheManager = {
-    get: jest.fn(),
     set: jest.fn(),
-    del: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -27,6 +37,8 @@ describe('AuthService', () => {
         AuthService,
         { provide: UserService, useValue: mockUserService },
         { provide: JwtService, useValue: mockJwtService },
+        { provide: ConfigService, useValue: mockConfigService },
+        { provide: MailService, useValue: mockMailService },
         { provide: CACHE_MANAGER, useValue: mockCacheManager },
       ],
     }).compile();

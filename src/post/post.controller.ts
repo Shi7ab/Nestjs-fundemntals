@@ -12,11 +12,11 @@ import { PostService } from './post.service';
 import { createpostDto } from './dto/createpost.dto';
 import { updatepostDto } from './dto/updatepost.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from 'src/guards/roles.guard';
+// import { RolesGuard } from 'src/guards/roles.guard';
 import { Roles } from 'src/guards/role.decorator';
 
+@UseGuards(AuthGuard('jwt'),Roles) // 👈 حماية كل الراوتس
 @Controller('posts')
-@UseGuards(AuthGuard('jwt'),RolesGuard) // 👈 حماية كل الراوتس
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
@@ -26,7 +26,6 @@ export class PostController {
   }
 
   @Get()
-  @Roles('admin') // 👈 حماية الراوت دي للادمن بس
   findAll() {
     return this.postService.findAll();
   }
@@ -35,13 +34,14 @@ export class PostController {
   findOne(@Param('id') id: string) {
     return this.postService.findById(id);
   }
-
+  @Roles('admin') // 👈 حماية الراوت دي للادمن بس
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.postService.delete(id);
   }
 
   @Put(':id')
+  @Roles('admin') // 👈 حماية الراوت دي للادمن بس
   update(
     @Param('id') id: string,
     @Body() update: updatepostDto

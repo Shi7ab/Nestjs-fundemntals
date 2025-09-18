@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, HttpCode,
     HttpStatus, Param, ParseIntPipe,
      ParseUUIDPipe, Patch, Post, Query, Req, Res, 
      UseGuards, 
+     UseInterceptors, 
      UsePipes, 
      ValidationPipe} from "@nestjs/common";
 import type { Request } from "express";
@@ -13,6 +14,7 @@ import { CustomValidationPipe } from "./pipe/validation.pipe";
 import { UserService } from "./user.service";
 import { AuthGuard } from "@nestjs/passport";
 import { RolesGuard } from "src/guards/roles.guard";
+import { LoggingInterceptor } from "src/interceptor/loggin.interceptor";
 
 
 @UseGuards(AuthGuard("jwt"),RolesGuard)
@@ -20,8 +22,9 @@ import { RolesGuard } from "src/guards/roles.guard";
 // controller actions 
 export default class UserController{
     constructor(private readonly userService:UserService){}
-
-
+    
+    
+    @UseInterceptors(LoggingInterceptor)
     @Get()
     async find(@Query("username") username?: string) {
     const users = await this.userService.findUsers();
@@ -56,3 +59,4 @@ export default class UserController{
     }
 
 }
+

@@ -20,6 +20,26 @@ model User {
   username String
   password String
   email    String @unique
+  resetPasswordToken String @default("")
+
 }
 
+
+model Payment {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String
+  amount         Float
+  currency       String
+  status         PaymentStatus
+  paymentMethod  String?
+  subscriptionId String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+enum PaymentStatus {
+  pending
+  completed
+  failed
+}
 

@@ -3,7 +3,10 @@ import { UserRepository } from "./user.repoistory";
 import { UpdateUserData } from "./dtos/update-user.dto";
 import { createUserData } from "./dtos/createUser.dtos";
 import bcrypt from "bcrypt"
+ 
+ 
 
+ 
 @Injectable()
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
@@ -22,8 +25,8 @@ export class UserService {
 
 
   async createUser(createUserDto: createUserData) {
-    const salt = await bcrypt.genSalt();
-    createUserDto.password = await bcrypt.hash(createUserDto.password, salt);
+    // const salt = await bcrypt.genSalt();
+    // createUserDto.password = await bcrypt.hash(createUserDto.password, salt);
     return this.userRepository.createUser(createUserDto);
   }
 
@@ -33,5 +36,8 @@ export class UserService {
 
   async deleteUser(id: string) {
     return this.userRepository.deleteUser(id);
+  }
+  async findByResetToken(resetToken: string) {
+    return this.userRepository.findByResetToken(resetToken);
   }
 }
